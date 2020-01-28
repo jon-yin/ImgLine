@@ -8,7 +8,8 @@ interface PostCallback {
 
 abstract class AbstractSource {
     protected lateinit var args: Map<String, String>
-    abstract val origin: String
+    val origin
+        get() = this::class.java
 
     fun init(args: Map<String, String>) {
         this.args = args

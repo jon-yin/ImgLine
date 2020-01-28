@@ -1,6 +1,11 @@
 <resources>
-    <string name="app_name">Photo App</string>
+    <string name="app_name">PhotoFeed</string>
     <string name="open_drawer">Open Drawer</string>
     <string name="close_drawer">Close Drawer</string>
     <string name="long_string">A REALLY LONG STRING, HOLY MOLY LOOK HOW LONG THIS IS!</string>
+    <string name="new_feed">Add new feed</string>
+    <plurals name="pointsValue">
+        <item quantity="one">%d\nPoint</item>
+        <item quantity="other">%d\nPoints</item>
+    </plurals>
 </resources>

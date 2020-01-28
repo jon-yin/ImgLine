@@ -13,12 +13,12 @@ import com.imgline.data.imgur.DefaultImgurSource
 import java.lang.IllegalArgumentException
 
 object Utils {
-    private val iconMapper = hashMapOf<String, @androidx.annotation.DrawableRes Int>(
-        DefaultImgurSource::class.java.name to R.drawable.imgur_logo
+    private val iconMapper = hashMapOf<Class<out Any>, @androidx.annotation.DrawableRes Int>(
+        DefaultImgurSource::class.java to R.drawable.imgur_logo
     )
 
-    fun getIcon(key: String): Int {
-        return iconMapper.get(key) ?: throw IllegalArgumentException("No icon for ${key}")
+    fun getIcon(key: Class<out Any>): Int {
+        return iconMapper[key] ?: throw IllegalArgumentException("No icon for ${key}")
     }
 }
 
@@ -52,4 +52,11 @@ fun scaleBitmap(res: Resources, @DrawableRes resID : Int, requiredWidth: Int, re
         inJustDecodeBounds = false
         return BitmapFactory.decodeResource(res, resID, this)
     }
+}
+
+fun autosizeGridLayout(cardSize: Int, ctx: Context): Int {
+    val dpUtils = ctx.resources.displayMetrics
+    val screenWidth = dpUtils.widthPixels
+    val columns = screenWidth / cardSize
+    return columns
 }

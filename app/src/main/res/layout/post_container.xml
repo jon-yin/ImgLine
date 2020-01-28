@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
     android:layout_margin="8dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -38,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.15" />
+                app:layout_constraintGuide_percent="0.2" />
 
             <ImageView
                 android:id="@+id/iconView"
@@ -49,6 +50,25 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/play_image"
+                android:layout_width="@dimen/play_button_icon"
+                android:layout_height="@dimen/play_button_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="@+id/imageView2"
+                app:srcCompat="@android:color/holo_red_dark" />
+
+            <ImageView
+                android:id="@+id/gallery_image"
+                android:layout_width="@dimen/layered_icon"
+                android:layout_height="@dimen/layered_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@android:color/holo_blue_light" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </androidx.cardview.widget.CardView>

@@ -1,38 +1,46 @@
 package com.imgline.data.imgur
 
-import android.util.Log
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.imgline.BuildConfig
 import com.imgline.data.*
 import okhttp3.*
-import okhttp3.MediaType
 import java.io.IOException
 import java.util.*
 
-class DefaultImgurSource() : AbstractSource() {
-    override val origin: String = this::class.java.name
+class DefaultImgurSource : AbstractSource() {
     private val client = OkHttpClient()
     private val gson = GsonBuilder()
         .registerTypeAdapter(Date::class.java, EpochDeserializer())
         .create()
-    //private val cachedData = hashMapOf<Int, List<ImgurAlbum>>()
 
     companion object {
         //{{section}}/{{sort}}/{{window}}/{{page}}
         val GALLERY_ENDPOINT = "https://api.imgur.com/3/gallery/%s/%s/%s/%d"
         val DEFAULT_SECTION = "hot"
-        val DEFAULT_TIME = "day"
+        val DEFAULT_WINDOW = "day"
         val DEFAULT_SORT = "viral"
+
+        fun packageArguments(
+            section : String? = null,
+            sort: String? = null,
+            window: String? = null
+        ) : Map<String, String>{
+            return hashMapOf<String, String>().apply {
+                section?.let {this.put("SECTION", it)}
+                sort?.let{this.put("SORT", it)}
+                window?.let{this.put("WINDOW", it)}
+            }
+        }
     }
 
     private fun getEndpoint(page: Int) = String.format(
         GALLERY_ENDPOINT,
         args.get("SECTION") ?: DEFAULT_SECTION,
         args.get("SORT") ?: DEFAULT_SORT,
-        args.get("TIME") ?: DEFAULT_TIME,
-        args.get("PAGE") ?: page
+        args.get("WINDOW") ?: DEFAULT_WINDOW,
+        page
     )
 
     override fun loadImages(page: Int, callback: PostCallback) {
@@ -60,11 +68,7 @@ class DefaultImgurSource() : AbstractSource() {
                     val posts = albumDataObj
                         .filterNot {it.isAlbum && it.images.size == 0}
                         .map{
-                        if (it.isAlbum) {
-                            Post(it.id, it.images[0].link, it.rating, it.isAlbum, mimeTypeToMediaType(it.images[0].type), origin)
-                        } else {
-                            Post(it.id, it.link, it.rating, it.isAlbum, mimeTypeToMediaType(it.type), origin)
-                        }
+                        mapGalleryItemToPost(it, origin)
                     }
                     callback.onSuccess(posts, page)
                 }

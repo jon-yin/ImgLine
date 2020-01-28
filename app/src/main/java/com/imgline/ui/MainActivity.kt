@@ -21,5 +21,7 @@ class MainActivity : AppCompatActivity() {
         val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer)
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
+        val navView = findViewById<NavigationView>(R.id.navigation_view)
+        val menuItem = navView.menu.add(getString(R.string.new_feed))
     }
 }
