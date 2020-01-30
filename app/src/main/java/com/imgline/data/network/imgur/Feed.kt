@@ -1,12 +1,7 @@
-package com.imgline.data
-
-interface PostCallback {
-    fun onSuccess(posts: List<Post>, page: Int)
-    fun onFailure(reason: String)
-}
+package com.imgline.data.network.imgur
 
 
-abstract class AbstractSource {
+abstract class AbstractFeed {
     protected lateinit var args: Map<String, String>
     val origin
         get() = this::class.java

@@ -1,7 +1,6 @@
-package com.imgline.data.imgur
+package com.imgline.data.network.imgur
 
 import com.google.gson.annotations.SerializedName
-import com.imgline.data.Post
 import com.imgline.data.mimeTypeToMediaType
 import java.util.*
 
@@ -32,7 +31,21 @@ data class ImgurImage(
 
 fun mapGalleryItemToPost(item: GalleryItem, origin: Class<out Any>): Post =
     if (item.isAlbum) {
-         Post(item.id, item.images[0].link, item.rating, item.isAlbum, mimeTypeToMediaType(item.images[0].type), origin)
+        Post(
+            item.id,
+            item.images[0].link,
+            item.rating,
+            item.isAlbum,
+            mimeTypeToMediaType(item.images[0].type),
+            origin
+        )
      } else {
-        Post(item.id, item.link, item.rating, item.isAlbum, mimeTypeToMediaType(item.type), origin)
+        Post(
+            item.id,
+            item.link,
+            item.rating,
+            item.isAlbum,
+            mimeTypeToMediaType(item.type),
+            origin
+        )
     }

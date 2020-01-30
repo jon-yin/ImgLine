@@ -1,4 +1,4 @@
-package com.imgline.data
+package com.imgline.data.network.imgur
 
 import java.lang.IllegalArgumentException
 
@@ -16,4 +16,9 @@ data class Post(val id: String, val thumbnailURL: String, val rating: Int, val i
 
 enum class MediaType{
     IMAGE, VIDEO, GIF
+}
+
+interface PostCallback {
+    fun onSuccess(posts: List<Post>, page: Int)
+    fun onFailure(reason: String)
 }

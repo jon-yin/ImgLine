@@ -1,9 +1,9 @@
 package com.imgline.data
 
-import android.util.Log
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
+import com.imgline.data.network.imgur.MediaType
 import java.lang.reflect.Type
 import java.util.*
 

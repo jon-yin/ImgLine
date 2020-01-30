@@ -1,18 +1,18 @@
 package com.imgline.data
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.imgline.data.imgur.DefaultImgurSource
-import kotlin.reflect.KClass
+import com.imgline.data.network.imgur.DefaultImgurFeed
+import com.imgline.data.network.imgur.Post
+import com.imgline.data.network.imgur.PostCallback
 
 class SourceManager : ViewModel(){
 
 //    private lateinit var mSources: List<AbstractSource>
 //    private var id: String = ""
     val mImages = MutableLiveData<List<Post>>()
-    val source = DefaultImgurSource()
+    val source = DefaultImgurFeed()
 
     init {
         source.init(mapOf())
@@ -23,7 +23,8 @@ class SourceManager : ViewModel(){
     }
 
     fun requestImages() {
-        source.loadImages(1, object: PostCallback {
+        source.loadImages(1, object:
+            PostCallback {
             override fun onSuccess(posts: List<Post>, page: Int) {
                 mImages.postValue(posts)
             }

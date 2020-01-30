@@ -1,18 +1,20 @@
-package com.imgline.data.imgur
+package com.imgline.data.network.imgur
 
-import com.imgline.data.AbstractSource
-import com.imgline.data.PostCallback
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
+import com.imgline.BuildConfig
+import okhttp3.Request
 
-class ImgurSearchSource: AbstractSource() {
+class ImgurSearchFeed: AbstractImgurFeed() {
 
     companion object {
-        val TAG = ImgurSearchSource::class.java
+        val TAG = ImgurSearchFeed::class.java
         //Endpoint https://api.imgur.com/3/gallery/search/{{sort}}/{{window}}/{{page}}?q=cats
         val ENDPOINT = "https://api.imgur.com/3/gallery/search/%s/%s/%d"
         val DEFAULT_SORT = "time"
         val DEFAULT_WINDOW = "all"
 
-        val names = listOf<String>(
+        val names = listOf(
             "SORT",
             "WINDOW",
             "Q",
@@ -39,7 +41,7 @@ class ImgurSearchSource: AbstractSource() {
 
     }
 
-    private fun getEndpoint(page: Int): String {
+    override fun getEndpoint(page: Int): String {
         return String.format(ENDPOINT,
             args.get("SORT") ?: DEFAULT_SORT,
             args.get("WINDOW") ?: DEFAULT_WINDOW,
@@ -47,7 +49,27 @@ class ImgurSearchSource: AbstractSource() {
             )
     }
 
-    override fun loadImages(page: Int, callback: PostCallback) {
+    override fun parsePosts(jsonString: String): List<Post> {
+        val albums = gson
+            .fromJson<JsonObject>(jsonString, JsonObject::class.java)
+            .getAsJsonArray("data")
+            .toString()
+        val albumDataObj = gson.fromJson<List<GalleryItem>>(
+            albums, object: TypeToken<List<GalleryItem>>(){}.type
+        )
+        val posts = albumDataObj
+            .filterNot {it.isAlbum && it.images.size == 0}
+            .map{
+                mapGalleryItemToPost(it, origin)
+            }
+        return posts
+    }
 
+    override fun buildRequest(url: String): Request {
+        return Request.Builder()
+            .get()
+            .url(url)
+            .addHeader("Authorization", "${BuildConfig.ImgurCID}")
+            .build()
     }
 }
