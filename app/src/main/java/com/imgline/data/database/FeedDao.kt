@@ -1,22 +1,53 @@
 package com.imgline.data.database
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
-interface FeedDao {
+abstract class FeedDao {
 
-    @Query("SELECT * FROM Feed")
-    fun getAllFeeds(): LiveData<List<EntityFeed>>
+    @Query("SELECT * FROM feed")
+    @Transaction
+    abstract fun _feedsWithSources() : List<FeedWithSources>
 
-    @Query("SELECT * FROM Feed WHERE id = :id")
-    fun getFeedWithId(id: Int): LiveData<EntityFeed>
+    @Query("SELECT * FROM feed where id = :id")
+    @Transaction
+    abstract fun _getFeedSourceWithID(id: Int) : FeedWithSources
 
-    fun insertFeed(feed: EntityFeed)
+    fun getFeeds() : List<EntityFeed> {
+        val feedWithSources = _feedsWithSources()
+        return feedWithSources.map {
+            it.feed.copy(sources=it.sources)
+        }
+    }
 
-    fun deleteFeed(feed: EntityFeed)
+    fun getFeedWithID(id: Int) : EntityFeed {
+        val feedWithSource = _getFeedSourceWithID(id)
+        return feedWithSource.feed.copy(sources = feedWithSource.sources)
+    }
 
-    fun updateFeed(feed: EntityFeed)
+    @Transaction
+    @Delete
+    abstract fun deleteFeed(feed: EntityFeed)
+
+    @Insert
+    abstract fun _insertFeed(feed: EntityFeed): Int
+
+    @Update
+    abstract fun updateFeed(feed: EntityFeed)
+
+    @Transaction
+    fun insertFeed(feed: EntityFeed) {
+        val returnedId = _insertFeed(feed)
+        insertSources(feed.sources.map { it.copy(feedId = returnedId) })
+    }
+
+    @Insert
+    abstract fun insertSources(source: List<EntitySource>)
+
+    @Delete
+    abstract fun deleteSource(source: EntitySource)
+
+    @Update
+    abstract fun updateSource(source: EntitySource)
 
 }

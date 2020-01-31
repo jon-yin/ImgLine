@@ -4,6 +4,6 @@
     <dimen name="text_container">125dp</dimen>
     <dimen name="card_width">141dp</dimen>
     <dimen name="default_icon_sample">24dp</dimen>
-    <dimen name="play_button_icon">36dp</dimen>
+    <dimen name="larger_icon">36dp</dimen>
     <dimen name="layered_icon">24dp</dimen>
 </resources>
