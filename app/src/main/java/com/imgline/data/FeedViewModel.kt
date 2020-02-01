@@ -1,25 +1,36 @@
 package com.imgline.data
 
+import android.app.Application
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.room.Room
+import com.imgline.R
+import com.imgline.data.database.AppDatabase
+import com.imgline.data.database.FeedDao
 import com.imgline.data.network.imgur.DefaultImgurFeed
 import com.imgline.data.network.imgur.Post
 import com.imgline.data.network.imgur.PostCallback
+import java.util.concurrent.locks.ReentrantLock
 
-class SourceManager : ViewModel(){
+class FeedViewModel(application: Application) : AndroidViewModel(application){
 
-//    private lateinit var mSources: List<AbstractSource>
-//    private var id: String = ""
     val mImages = MutableLiveData<List<Post>>()
     val source = DefaultImgurFeed()
+    val feedHandlers = listOf(
+        application.getString(R.string.imgur) to application.resources.getStringArray(R.array.imgur_options)
+    )
+    private val appDB : AppDatabase
+    private val feedDao: FeedDao
 
     init {
         source.init(mapOf())
+        appDB = AppDatabase.getInstance(application)!!
+        feedDao = appDB.feedDao()
     }
 
     companion object {
-        val TAG = SourceManager::class.simpleName
+        val TAG = FeedViewModel::class.simpleName
     }
 
     fun requestImages() {
@@ -34,6 +45,7 @@ class SourceManager : ViewModel(){
             }
         })
     }
+
 
 //    class SourceArg(val source : AbstractSource, val args : Map<String,String> = mapOf())
 //

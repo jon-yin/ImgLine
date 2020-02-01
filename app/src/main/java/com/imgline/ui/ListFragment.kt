@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.imgline.R
 import com.imgline.data.network.imgur.MediaType
 import com.imgline.data.network.imgur.Post
-import com.imgline.data.SourceManager
+import com.imgline.data.FeedViewModel
 
 class ListFragment: Fragment() {
 
@@ -32,18 +32,18 @@ class ListFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_list_main, container, false)
+        val view = inflater.inflate(R.layout.fragment_recycler_view, container, false)
         recyclerView = view.findViewById(R.id.recycler_view)
         val colCount = autosizeGridLayout(activity!!.resources.getDimensionPixelSize(R.dimen.card_width), activity!!)
         recyclerView.layoutManager = GridLayoutManager(activity, colCount)
         val postAdapter = PostAdapter()
         recyclerView.adapter = postAdapter
         setHasOptionsMenu(true)
-        val sourceViewModel : SourceManager by viewModels()
-        sourceViewModel.mImages.observe(viewLifecycleOwner, Observer<List<Post>>{
+        val feedViewModel : FeedViewModel by viewModels()
+        feedViewModel.mImages.observe(viewLifecycleOwner, Observer<List<Post>>{
             postAdapter.updateList(it)
         })
-        sourceViewModel.requestImages()
+        feedViewModel.requestImages()
         return view
     }
 }

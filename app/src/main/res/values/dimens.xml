@@ -6,4 +6,6 @@
     <dimen name="default_icon_sample">24dp</dimen>
     <dimen name="larger_icon">36dp</dimen>
     <dimen name="layered_icon">24dp</dimen>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="larger_margin">16dp</dimen>
 </resources>
