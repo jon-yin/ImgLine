@@ -8,4 +8,5 @@
     <dimen name="layered_icon">24dp</dimen>
     <dimen name="small_margin">8dp</dimen>
     <dimen name="larger_margin">16dp</dimen>
+    <dimen name="drawer_menu">300dp</dimen>
 </resources>

@@ -19,10 +19,4 @@ class Converters {
         return gson.fromJson(json, object: TypeToken<Map<String, String>>(){}.type)
     }
 
-    @TypeConverter
-    fun clazz2String(clazz: Class<out AbstractFeed>) = clazz.name
-
-    @TypeConverter
-    fun String2clazz(className: String) = Class.forName(className)
-
 }

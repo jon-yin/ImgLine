@@ -5,6 +5,8 @@
     <string name="long_string">A REALLY LONG STRING, HOLY MOLY LOOK HOW LONG THIS IS!</string>
     <string name="new_feed">Add new feed</string>
     <string name="imgur">Imgur</string>
+    <string name="feed_name">Feed Name:</string>
+    <string name="feed_hint">Enter feed name</string>
     <string-array name="imgur_options">
         <item>Front Page</item>
         <item>Search</item>

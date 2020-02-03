@@ -3,10 +3,12 @@ package com.imgline.data
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import com.imgline.R
 import com.imgline.data.database.AppDatabase
+import com.imgline.data.database.EntityFeed
 import com.imgline.data.database.FeedDao
 import com.imgline.data.network.imgur.DefaultImgurFeed
 import com.imgline.data.network.imgur.Post
@@ -46,20 +48,7 @@ class FeedViewModel(application: Application) : AndroidViewModel(application){
         })
     }
 
-
-//    class SourceArg(val source : AbstractSource, val args : Map<String,String> = mapOf())
-//
-//    fun init(id: String, vararg sources: SourceArg) {
-//        if (this.id == id) {
-//            return
-//        } else {
-//            mSources = sources.map {
-//                it.source.init(it.args)
-//                it.source
-//            }
-//        }
-//    }
-
+    fun getFeeds() : LiveData<List<EntityFeed>> = feedDao.getFeedsNoSources()
 
 
 

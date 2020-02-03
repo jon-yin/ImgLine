@@ -2,13 +2,18 @@ package com.imgline.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 import com.imgline.R
@@ -30,23 +35,36 @@ class MainActivity : AppCompatActivity() {
         drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
         val navView = findViewById<RecyclerView>(R.id.recycler_navigation_view)
-        configureRecyclerView(navView)
+        configureRecyclerView(navView, drawerLayout)
 
     }
 
-    fun configureRecyclerView(recyclerView: RecyclerView) {
-
+    fun configureRecyclerView(recyclerView: RecyclerView, drawerLayout: DrawerLayout?) {
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val navController = findNavController(R.id.android_nav_frag)
+        val addPostClickListener = View.OnClickListener {
+            navController.navigate(R.id.createFeedFragment)
+            if (drawerLayout != null) {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            }
+        }
+        val adapter = FeedAdapter(listOf(), addPostClickListener)
+        recyclerView.adapter = adapter
+        feedsViewModel.getFeeds().observe(this, Observer<List<EntityFeed>>{
+            newList  ->
+                adapter.feeds = newList
+                adapter.notifyDataSetChanged()
+            }
+        )
     }
 }
 
-class FeedItem(itemView : View, itemType: Int) : RecyclerView.ViewHolder(itemView){
+class FeedItem(itemView : View, clickListener: View.OnClickListener) : RecyclerView.ViewHolder(itemView){
 
     private lateinit var mFeed : EntityFeed
 
     init {
-        if (itemType == FeedAdapter.ADD_MENU_ITEM) {
-
-        }
+        itemView.setOnClickListener(clickListener)
     }
 
     fun bind(feed: EntityFeed) {
@@ -55,15 +73,24 @@ class FeedItem(itemView : View, itemType: Int) : RecyclerView.ViewHolder(itemVie
 
 }
 
-class FeedAdapter(var feeds :List<EntityFeed>): RecyclerView.Adapter<FeedItem>() {
+class FeedAdapter(var feeds :List<EntityFeed>,
+                  val addPost: View.OnClickListener
+                  ): RecyclerView.Adapter<FeedItem>() {
 
     companion object {
         val ADD_MENU_ITEM = 1
         val FEED_MENU_ITEM = 2
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedItem =
-        FeedItem(LayoutInflater.from(parent.context).inflate(R.layout.navigation_view_item, parent, false), viewType)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedItem {
+     return  FeedItem(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.navigation_view_item,
+                parent,
+                false
+            ), addPost
+        )
+    }
 
 
 
@@ -83,4 +110,5 @@ class FeedAdapter(var feeds :List<EntityFeed>): RecyclerView.Adapter<FeedItem>()
             holder.bind(feeds[position - 1])
         }
     }
+
 }
