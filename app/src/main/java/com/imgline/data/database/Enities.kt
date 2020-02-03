@@ -1,7 +1,6 @@
 package com.imgline.data.database
 
 import androidx.room.*
-import com.imgline.data.network.imgur.AbstractFeed
 
 @Entity(tableName = "source", foreignKeys = arrayOf(ForeignKey(
     entity = EntityFeed::class,

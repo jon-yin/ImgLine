@@ -1,7 +1,7 @@
 package com.imgline.data.network.imgur
 
 
-abstract class AbstractFeed {
+abstract class AbstractSource {
     protected lateinit var args: Map<String, String>
     val origin
         get() = this::class.java

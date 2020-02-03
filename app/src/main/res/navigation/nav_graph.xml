@@ -14,5 +14,14 @@
     <fragment
         android:id="@+id/createFeedFragment"
         android:name="com.imgline.ui.CreateFeedFragment"
-        android:label="CreateFeedFragment" />
+        android:label="CreateFeedFragment" >
+        <action
+            android:id="@+id/action_createFeedFragment_to_sourceChooseFragment"
+            app:destination="@id/sourceChooseFragment"
+            app:popUpTo="@id/createFeedFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/sourceChooseFragment"
+        android:name="com.imgline.ui.SourceChooseFragment"
+        android:label="SourceChooseFragment" />
 </navigation>

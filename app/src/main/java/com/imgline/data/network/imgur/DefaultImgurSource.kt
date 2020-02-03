@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken
 import com.imgline.BuildConfig
 import okhttp3.Request
 
-class DefaultImgurFeed : AbstractImgurFeed() {
+class DefaultImgurSource : AbstractImgurSource() {
 
     companion object {
         //{{section}}/{{sort}}/{{window}}/{{page}}

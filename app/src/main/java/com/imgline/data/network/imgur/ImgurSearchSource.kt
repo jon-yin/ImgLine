@@ -5,10 +5,10 @@ import com.google.gson.reflect.TypeToken
 import com.imgline.BuildConfig
 import okhttp3.Request
 
-class ImgurSearchFeed: AbstractImgurFeed() {
+class ImgurSearchSource: AbstractImgurSource() {
 
     companion object {
-        val TAG = ImgurSearchFeed::class.java
+        val TAG = ImgurSearchSource::class.java
         //Endpoint https://api.imgur.com/3/gallery/search/{{sort}}/{{window}}/{{page}}?q=cats
         val ENDPOINT = "https://api.imgur.com/3/gallery/search/%s/%s/%d"
         val DEFAULT_SORT = "time"

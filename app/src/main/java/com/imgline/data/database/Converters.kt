@@ -3,7 +3,6 @@ package com.imgline.data.database
 import androidx.room.TypeConverter
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.imgline.data.network.imgur.AbstractFeed
 
 
 class Converters {

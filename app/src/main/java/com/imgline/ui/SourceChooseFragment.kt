@@ -12,10 +12,6 @@ import com.imgline.data.FeedViewModel
 
 class SourceChooseFragment : Fragment(){
 
-    companion object {
-        fun newInstance() : SourceChooseFragment = SourceChooseFragment()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,8 +19,6 @@ class SourceChooseFragment : Fragment(){
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recycler_view, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
-        val feedModel : FeedViewModel by viewModels()
-        val items = feedModel.feedHandlers
 
         return view
     }

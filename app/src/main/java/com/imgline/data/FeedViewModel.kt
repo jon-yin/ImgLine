@@ -5,20 +5,18 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.room.Room
 import com.imgline.R
 import com.imgline.data.database.AppDatabase
 import com.imgline.data.database.EntityFeed
 import com.imgline.data.database.FeedDao
-import com.imgline.data.network.imgur.DefaultImgurFeed
+import com.imgline.data.network.imgur.DefaultImgurSource
 import com.imgline.data.network.imgur.Post
 import com.imgline.data.network.imgur.PostCallback
-import java.util.concurrent.locks.ReentrantLock
 
 class FeedViewModel(application: Application) : AndroidViewModel(application){
 
     val mImages = MutableLiveData<List<Post>>()
-    val source = DefaultImgurFeed()
+    val source = DefaultImgurSource()
     val feedHandlers = listOf(
         application.getString(R.string.imgur) to application.resources.getStringArray(R.array.imgur_options)
     )

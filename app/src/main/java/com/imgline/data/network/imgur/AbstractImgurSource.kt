@@ -9,7 +9,7 @@ import okhttp3.*
 import java.io.IOException
 import java.util.*
 
-abstract class AbstractImgurFeed : AbstractFeed() {
+abstract class AbstractImgurSource : AbstractSource() {
     protected val client = OkHttpClient()
     protected val gson = GsonBuilder()
         .registerTypeAdapter(Date::class.java, EpochDeserializer())
