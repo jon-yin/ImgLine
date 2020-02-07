@@ -9,22 +9,19 @@ import com.imgline.R
 import com.imgline.data.database.AppDatabase
 import com.imgline.data.database.EntityFeed
 import com.imgline.data.database.FeedDao
-import com.imgline.data.network.imgur.DefaultImgurSource
+import com.imgline.data.network.imgur.ImgurDefaultSource
 import com.imgline.data.network.imgur.Post
 import com.imgline.data.network.imgur.PostCallback
 
 class FeedViewModel(application: Application) : AndroidViewModel(application){
 
     val mImages = MutableLiveData<List<Post>>()
-    val source = DefaultImgurSource()
-    val feedHandlers = listOf(
-        application.getString(R.string.imgur) to application.resources.getStringArray(R.array.imgur_options)
-    )
+    val source = ImgurDefaultSource(mapOf())
+
     private val appDB : AppDatabase
     private val feedDao: FeedDao
 
     init {
-        source.init(mapOf())
         appDB = AppDatabase.getInstance(application)!!
         feedDao = appDB.feedDao()
     }

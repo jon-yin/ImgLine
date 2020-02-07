@@ -1,4 +1,4 @@
-package com.imgline.ui
+package com.imgline.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

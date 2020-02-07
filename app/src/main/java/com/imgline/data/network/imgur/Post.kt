@@ -1,11 +1,12 @@
 package com.imgline.data.network.imgur
 
+import com.imgline.ui.SpecificSourceType
 import java.lang.IllegalArgumentException
 
 data class Post(val id: String, val thumbnailURL: String, val rating: Int, val isMultiple: Boolean, val type: MediaType,
-                val origin: Class<out Any>) {
+                val origin: SpecificSourceType) {
     val fullName: String
-        get() = "$id:${origin.simpleName}"
+        get() = "$id:${origin}"
     val metadata = hashMapOf<String, String>()
 
     fun addMetadata(vararg entries: Pair<String, String>) {

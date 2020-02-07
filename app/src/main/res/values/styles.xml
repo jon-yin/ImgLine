@@ -14,4 +14,8 @@
         <item name="cardBackgroundColor">@color/lightGrey</item>
     </style>
 
+    <style name="listTextStyle" parent="@android:style/TextAppearance.Medium">
+
+    </style>
+
 </resources>

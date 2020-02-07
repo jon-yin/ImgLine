@@ -1,7 +1,6 @@
 package com.imgline.ui;
 
-import android.view.View
-import androidx.lifecycle.MutableLiveData
+
 import androidx.lifecycle.ViewModel;
 import com.imgline.data.database.EntitySource
 import com.imgline.data.network.imgur.AbstractSource

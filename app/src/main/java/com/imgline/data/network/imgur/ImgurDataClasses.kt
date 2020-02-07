@@ -2,6 +2,7 @@ package com.imgline.data.network.imgur
 
 import com.google.gson.annotations.SerializedName
 import com.imgline.data.mimeTypeToMediaType
+import com.imgline.ui.SpecificSourceType
 import java.util.*
 
 data class GalleryItem(
@@ -29,7 +30,7 @@ data class ImgurImage(
     val link: String
 )
 
-fun mapGalleryItemToPost(item: GalleryItem, origin: Class<out Any>): Post =
+fun mapGalleryItemToPost(item: GalleryItem, origin: SpecificSourceType): Post =
     if (item.isAlbum) {
         Post(
             item.id,

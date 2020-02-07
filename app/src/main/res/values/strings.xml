@@ -7,10 +7,8 @@
     <string name="imgur">Imgur</string>
     <string name="feed_name">Feed Name:</string>
     <string name="feed_hint">Enter feed name</string>
-    <string-array name="imgur_options">
-        <item>Front Page</item>
-        <item>Search</item>
-    </string-array>
+    <string name="imgur_default">Front Page</string>
+    <string name="imgur_search">Search</string>
     <plurals name="pointsValue">
         <item quantity="one">%d\nPoint</item>
         <item quantity="other">%d\nPoints</item>

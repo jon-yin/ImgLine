@@ -1,4 +1,4 @@
-package com.imgline.ui
+package com.imgline.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +18,9 @@ import com.imgline.R
 import com.imgline.data.network.imgur.MediaType
 import com.imgline.data.network.imgur.Post
 import com.imgline.data.FeedViewModel
+import com.imgline.ui.autosizeGridLayout
+import com.imgline.ui.getCircleProgressDrawable
+import com.imgline.ui.scaleBitmap
 
 class ListFragment: Fragment() {
 
@@ -34,7 +37,9 @@ class ListFragment: Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_recycler_view, container, false)
         recyclerView = view.findViewById(R.id.recycler_view)
-        val colCount = autosizeGridLayout(activity!!.resources.getDimensionPixelSize(R.dimen.card_width), activity!!)
+        val colCount = autosizeGridLayout(
+            activity!!.resources.getDimensionPixelSize(R.dimen.card_width), activity!!
+        )
         recyclerView.layoutManager = GridLayoutManager(activity, colCount)
         val postAdapter = PostAdapter()
         recyclerView.adapter = postAdapter
@@ -75,13 +80,16 @@ class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         Log.d(ListFragment.TAG, "Origin ${post.origin}")
         val context = itemView.context
         val imageView = itemView.findViewById<ImageView>(R.id.imageView2)
-        val iconResource = Utils.getIcon(post.origin)
+        val iconResource = post.origin.iconResource
         val iconView = itemView.findViewById<ImageView>(R.id.iconView)
         //context.resources.getDimension()
-        val drawable = scaleBitmap(context.resources, iconResource,
-            iconWidth ?: context.resources.getDimensionPixelSize(R.dimen.default_icon_sample),
-            iconHeight ?: context.resources.getDimensionPixelSize(R.dimen.default_icon_sample)
-            )
+        val drawable = scaleBitmap(
+            context.resources, iconResource,
+            iconWidth
+                ?: context.resources.getDimensionPixelSize(R.dimen.default_icon_sample),
+            iconHeight
+                ?: context.resources.getDimensionPixelSize(R.dimen.default_icon_sample)
+        )
         iconView.setImageBitmap(drawable)
         val playImage = itemView.findViewById<ImageView>(R.id.play_image)
         val galImage = itemView.findViewById<ImageView>(R.id.gallery_image)
@@ -112,7 +120,13 @@ class PostAdapter(var mItems: List<Post> = arrayListOf()) : RecyclerView.Adapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return PostViewHolder(inflater.inflate(R.layout.post_container, parent, false))
+        return PostViewHolder(
+            inflater.inflate(
+                R.layout.post_container,
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemCount(): Int {
@@ -126,7 +140,12 @@ class PostAdapter(var mItems: List<Post> = arrayListOf()) : RecyclerView.Adapter
     fun updateList(posts: List<Post>) {
         val oldItems = mItems
         mItems = posts
-        DiffUtil.calculateDiff(PostDiffCallback(oldItems, mItems)).dispatchUpdatesTo(this)
+        DiffUtil.calculateDiff(
+            PostDiffCallback(
+                oldItems,
+                mItems
+            )
+        ).dispatchUpdatesTo(this)
     }
 }
 

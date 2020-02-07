@@ -3,9 +3,13 @@ package com.imgline.data.network.imgur
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.imgline.BuildConfig
+import com.imgline.data.network.SingleRequestSource
+import com.imgline.ui.SpecificSourceType
 import okhttp3.Request
 
-class DefaultImgurSource : AbstractImgurSource() {
+class ImgurDefaultSource(args: Map<String, String>) : SingleRequestSource(args) {
+
+    override val origin: SpecificSourceType = SpecificSourceType.IMGUR_FRONT_PAGE
 
     companion object {
         //{{section}}/{{sort}}/{{window}}/{{page}}

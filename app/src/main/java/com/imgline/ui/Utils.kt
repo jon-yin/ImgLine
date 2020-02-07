@@ -8,12 +8,12 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.imgline.R
-import com.imgline.data.network.imgur.DefaultImgurSource
+import com.imgline.data.network.imgur.ImgurDefaultSource
 import java.lang.IllegalArgumentException
 
 object Utils {
     private val iconMapper = hashMapOf<Class<out Any>, @androidx.annotation.DrawableRes Int>(
-        DefaultImgurSource::class.java to R.drawable.imgur_logo
+        ImgurDefaultSource::class.java to R.drawable.imgur_logo
     )
 
     fun getIcon(key: Class<out Any>): Int {

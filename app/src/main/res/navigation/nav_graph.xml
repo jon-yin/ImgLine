@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.imgline.ui.ListFragment"
+        android:name="com.imgline.ui.fragments.ListFragment"
         android:label="ListFragment" >
         <action
             android:id="@+id/action_listFragment_to_createFeedFragment"
@@ -13,7 +13,7 @@
     </fragment>
     <fragment
         android:id="@+id/createFeedFragment"
-        android:name="com.imgline.ui.CreateFeedFragment"
+        android:name="com.imgline.ui.fragments.CreateFeedFragment"
         android:label="CreateFeedFragment" >
         <action
             android:id="@+id/action_createFeedFragment_to_sourceChooseFragment"
@@ -22,6 +22,6 @@
     </fragment>
     <fragment
         android:id="@+id/sourceChooseFragment"
-        android:name="com.imgline.ui.SourceChooseFragment"
+        android:name="com.imgline.ui.fragments.SourceChooseFragment"
         android:label="SourceChooseFragment" />
 </navigation>
