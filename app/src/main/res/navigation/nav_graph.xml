@@ -23,5 +23,19 @@
     <fragment
         android:id="@+id/sourceChooseFragment"
         android:name="com.imgline.ui.fragments.SourceChooseFragment"
-        android:label="SourceChooseFragment" />
+        android:label="SourceChooseFragment" >
+        <action
+            android:id="@+id/action_sourceChooseFragment_to_sourceArgsFragment"
+            app:destination="@id/sourceArgsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/sourceArgsFragment"
+        android:name="com.imgline.ui.fragments.SourceArgsFragment"
+        android:label="SourceArgsFragment" >
+        <action
+            android:id="@+id/action_sourceArgsFragment_to_createFeedFragment"
+            app:destination="@id/createFeedFragment"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

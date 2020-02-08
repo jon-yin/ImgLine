@@ -37,7 +37,7 @@ class SourceChooseFragment : Fragment(){
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL))
         val adapter =
-            SourceAdapter(SourceType.values().toList())
+            SourceAdapter(this, SourceType.values().toList())
         recyclerView.adapter = adapter
         return view
     }
@@ -74,7 +74,7 @@ class SourceChooseViewHolder(view : View, val adapter: SourceAdapter) : Recycler
             params.setMargins(largeMargin, smallMargin, smallMargin, smallMargin)
             textView.layoutParams = params
             textView.setOnClickListener{
-
+                adapter.navigateToSourceArgsFrag(option)
             }
             parent.addView(textView)
         }
@@ -82,7 +82,7 @@ class SourceChooseViewHolder(view : View, val adapter: SourceAdapter) : Recycler
 
 }
 
-class SourceAdapter(val types : List<SourceType>) : RecyclerView.Adapter<SourceChooseViewHolder>() {
+class SourceAdapter(val fragment: SourceChooseFragment, val types : List<SourceType>) : RecyclerView.Adapter<SourceChooseViewHolder>() {
 
     val isExpanded = SparseBooleanArray(types.size)
 
@@ -105,5 +105,9 @@ class SourceAdapter(val types : List<SourceType>) : RecyclerView.Adapter<SourceC
 
     fun updateExpandedArray(newState: Boolean, position: Int) {
         isExpanded.put(position, newState)
+    }
+
+    fun navigateToSourceArgsFrag(specificSourceType: SpecificSourceType) {
+
     }
 }

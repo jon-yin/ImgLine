@@ -13,4 +13,5 @@
         <item quantity="one">%d\nPoint</item>
         <item quantity="other">%d\nPoints</item>
     </plurals>
+    <string name="name_field">Name:</string>
 </resources>

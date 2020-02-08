@@ -2,12 +2,14 @@ package com.imgline.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.fragment.app.Fragment
 import com.imgline.R
 import com.imgline.data.network.imgur.AbstractSource
 import com.imgline.data.network.imgur.ImgurDefaultSource
 import com.imgline.data.network.imgur.ImgurSearchSource
 
+interface HasSourceOrigin {
+    val origin : SpecificSourceType
+}
 
 enum class SpecificSourceType(
     val concreteSource : (Map<String, String>) -> AbstractSource,
@@ -34,8 +36,3 @@ enum class SourceType(
 }
 
 val SOURCE_TO_SPECIFIC = SpecificSourceType.values().groupBy { it.generalSourceType }
-
-
-interface HasSourceOrigin {
-    val origin : SpecificSourceType
-}
