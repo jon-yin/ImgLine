@@ -8,10 +8,15 @@
     <string name="feed_name">Feed Name:</string>
     <string name="feed_hint">Enter feed name</string>
     <string name="imgur_default">Front Page</string>
+    <string name="imgur_default_source_name">Imgur Front Page Source</string>
     <string name="imgur_search">Search</string>
     <plurals name="pointsValue">
         <item quantity="one">%d\nPoint</item>
         <item quantity="other">%d\nPoints</item>
     </plurals>
     <string name="name_field">Name:</string>
+    <string name="section_field">Section:</string>
+    <string name="sort_field">Sort:</string>
+    <string name="window_field">Window:</string>
+    <string name="submit_button">Submit</string>
 </resources>

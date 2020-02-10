@@ -1,17 +1,14 @@
 package com.imgline.ui;
 
 
-import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel;
-import com.imgline.data.database.EntitySource
-import com.imgline.data.network.imgur.AbstractSource
+import androidx.lifecycle.ViewModel
 
 class SourcesViewModel : ViewModel() {
 
-    val requiredArgs = MutableLiveData<Arguments>()
+    val requiredArgs = MutableLiveData<List<Input>>()
 
-    fun updateArguments(arguments: Arguments) {
+    fun updateArguments(arguments: List<Input>) {
         requiredArgs.postValue(arguments)
     }
 

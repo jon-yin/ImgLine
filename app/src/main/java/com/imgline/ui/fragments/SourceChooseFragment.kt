@@ -15,6 +15,7 @@ import androidx.core.view.marginTop
 import androidx.core.view.setMargins
 import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -108,6 +109,8 @@ class SourceAdapter(val fragment: SourceChooseFragment, val types : List<SourceT
     }
 
     fun navigateToSourceArgsFrag(specificSourceType: SpecificSourceType) {
-
+        val navHost = fragment.findNavController()
+        val bundle = SourceArgsFragment.createArguments(specificSourceType)
+        navHost.navigate(R.id.action_sourceChooseFragment_to_sourceArgsFragment, bundle)
     }
 }
