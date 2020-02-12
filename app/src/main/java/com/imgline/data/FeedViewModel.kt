@@ -5,13 +5,12 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.imgline.R
 import com.imgline.data.database.AppDatabase
 import com.imgline.data.database.EntityFeed
 import com.imgline.data.database.FeedDao
 import com.imgline.data.network.imgur.ImgurDefaultSource
-import com.imgline.data.network.imgur.Post
-import com.imgline.data.network.imgur.PostCallback
+import com.imgline.data.network.Post
+import com.imgline.data.network.PostCallback
 
 class FeedViewModel(application: Application) : AndroidViewModel(application){
 

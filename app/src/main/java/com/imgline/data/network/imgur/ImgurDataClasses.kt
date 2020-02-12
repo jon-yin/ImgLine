@@ -2,6 +2,7 @@ package com.imgline.data.network.imgur
 
 import com.google.gson.annotations.SerializedName
 import com.imgline.data.mimeTypeToMediaType
+import com.imgline.data.network.Post
 import com.imgline.ui.SpecificSourceType
 import java.util.*
 

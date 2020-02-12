@@ -3,6 +3,7 @@ package com.imgline.data.network.imgur
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.imgline.BuildConfig
+import com.imgline.data.network.Post
 import com.imgline.data.network.SingleRequestSource
 import com.imgline.ui.SpecificSourceType
 import okhttp3.Request

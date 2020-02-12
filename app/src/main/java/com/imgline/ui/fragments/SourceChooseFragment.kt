@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.util.keyIterator
 import androidx.core.view.marginTop
 import androidx.core.view.setMargins
 import androidx.core.view.updateMarginsRelative
@@ -26,6 +27,8 @@ import com.imgline.ui.SourceType
 import com.imgline.ui.SpecificSourceType
 
 class SourceChooseFragment : Fragment(){
+    private lateinit var adapter: SourceAdapter
+    private val EXPANDED_KEY : String = "EXPANDED"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,10 +40,21 @@ class SourceChooseFragment : Fragment(){
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL))
-        val adapter =
+        adapter =
             SourceAdapter(this, SourceType.values().toList())
         recyclerView.adapter = adapter
         return view
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val expanded = adapter.isExpanded
+            .keyIterator()
+            .asSequence()
+            .filter { adapter.isExpanded[it, false]}
+            .toList()
+            .toIntArray()
+        outState.putIntArray(EXPANDED_KEY, expanded)
     }
 }
 
@@ -110,7 +124,7 @@ class SourceAdapter(val fragment: SourceChooseFragment, val types : List<SourceT
 
     fun navigateToSourceArgsFrag(specificSourceType: SpecificSourceType) {
         val navHost = fragment.findNavController()
-        val bundle = SourceArgsFragment.createArguments(specificSourceType)
+        val bundle = SourceArgsFragment.createArguments(specificSourceType, 0)
         navHost.navigate(R.id.action_sourceChooseFragment_to_sourceArgsFragment, bundle)
     }
 }

@@ -1,4 +1,4 @@
-package com.imgline.data.network.imgur
+package com.imgline.data.network
 
 import com.imgline.ui.HasSourceOrigin
 

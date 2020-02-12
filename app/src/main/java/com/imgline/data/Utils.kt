@@ -3,7 +3,7 @@ package com.imgline.data
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.imgline.data.network.imgur.MediaType
+import com.imgline.data.network.MediaType
 import java.lang.reflect.Type
 import java.util.*
 

@@ -3,7 +3,7 @@ package com.imgline.ui
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.imgline.R
-import com.imgline.data.network.imgur.AbstractSource
+import com.imgline.data.network.AbstractSource
 import com.imgline.data.network.imgur.ImgurDefaultSource
 import com.imgline.data.network.imgur.ImgurSearchSource
 

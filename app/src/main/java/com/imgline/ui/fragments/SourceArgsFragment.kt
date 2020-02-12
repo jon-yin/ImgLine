@@ -7,14 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.imgline.R
-import com.imgline.data.network.imgur.ImgurDefaultSource
+import com.imgline.data.network.imgur.*
 import com.imgline.ui.*
 
 class SourceArgsFragment : Fragment() {
@@ -22,10 +20,15 @@ class SourceArgsFragment : Fragment() {
     companion object {
 
         val TYPE_ARG = "TYPE"
+        val SOURCE_POSITION = "POSITION"
 
-        fun createArguments(specificSourceType: SpecificSourceType) : Bundle {
+        fun createArguments(
+            specificSourceType: SpecificSourceType,
+            sourcePosition: Int
+        ) : Bundle {
             return Bundle().apply {
                 this.putInt(TYPE_ARG, specificSourceType.ordinal)
+                this.putInt(SOURCE_POSITION, sourcePosition)
             }
         }
     }
@@ -36,18 +39,35 @@ class SourceArgsFragment : Fragment() {
                     EditTextItem("Name", R.string.name_field, false,
                         activity?.getString(R.string.imgur_default_source_name) ?:
                         SpecificSourceType.IMGUR_FRONT_PAGE.toString()),
-                    SpinnerItem("SECTION", R.string.section_field, false,
-                        ImgurDefaultSource.DEFAULT_SECTION,
-
+                    SpinnerItem("SECTION",
+                        R.string.section_field,
+                        false,
+                        SECTION_OPTIONS,
+                        SECTION_FRIENDLY_NAMES,
+                        ImgurDefaultSource.DEFAULT_SECTION
                         ),
-                    SpinnerItem("SORT", R.string.sort_field, false,
-                        ImgurDefaultSource.DEFAULT_SORT),
-                    SpinnerItem("WINDOW", R.string.window_field, false,
-                        ImgurDefaultSource.DEFAULT_WINDOW)
+                    SpinnerItem("SORT",
+                        R.string.sort_field,
+                        false,
+                        SORT_OPTIONS,
+                        SORT_FRIENDLY_NAMES,
+                        ImgurDefaultSource.DEFAULT_SORT
+                    ),
+                    SpinnerItem("WINDOW",
+                        R.string.window_field,
+                        false,
+                        WINDOW_OPTIONS,
+                        WINDOW_FRIENDLY_NAMES,
+                        ImgurDefaultSource.DEFAULT_WINDOW
+                    )
             )}
             SpecificSourceType.IMGUR_SEARCH -> {
                 listOf()}
         }
+    }
+
+    private fun fetchPreviousArguments(position: Int) : Map<String, String>{
+        return mapOf()
     }
 
     override fun onCreateView(
@@ -57,10 +77,13 @@ class SourceArgsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_args_choose, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
-        val sourceType = SpecificSourceType.values()[arguments!!.getInt(TYPE_ARG)]
+        val sourceType = SpecificSourceType.values()[requireArguments().getInt(TYPE_ARG)]
+        val sourcePosition = requireArguments().getInt(SOURCE_POSITION)
         val args = getArgumentsToInflate(sourceType)
+        val previousArguments = fetchPreviousArguments(sourcePosition)
         for (arg in args) {
             arg.inflate(activity!!)
+            arg.fillFromArguments(previousArguments)
         }
         val adapter = ArgumentAdapter(args)
         recyclerView.layoutManager = LinearLayoutManager(activity!!)
@@ -104,11 +127,13 @@ class ArgumentAdapter(val arguments: List<Input>) : RecyclerView.Adapter<Argumen
                     FrameLayout.LayoutParams.WRAP_CONTENT)
                 params.gravity = Gravity.CENTER
                 params.marginEnd = ctx.resources.getDimensionPixelSize(R.dimen.small_margin)
+                params.marginStart = ctx.resources.getDimensionPixelSize(R.dimen.small_margin)
                 val titleParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
                     FrameLayout.LayoutParams.WRAP_CONTENT
                     )
                 titleParams.gravity = Gravity.CENTER_VERTICAL
                 titleParams.marginStart = ctx.resources.getDimensionPixelSize(R.dimen.small_margin)
+                titleParams.marginEnd = ctx.resources.getDimensionPixelSize(R.dimen.small_margin)
                 firstChild.addView(textView, titleParams)
                 secondChild.addView(widget, params)
             }

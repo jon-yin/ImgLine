@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.imgline.R
-import com.imgline.data.network.imgur.MediaType
-import com.imgline.data.network.imgur.Post
+import com.imgline.data.network.MediaType
+import com.imgline.data.network.Post
 import com.imgline.data.FeedViewModel
 import com.imgline.ui.autosizeGridLayout
 import com.imgline.ui.getCircleProgressDrawable
