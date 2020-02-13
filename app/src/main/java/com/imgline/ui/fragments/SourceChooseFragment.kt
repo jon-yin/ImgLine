@@ -12,23 +12,25 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.util.keyIterator
+import androidx.core.util.set
 import androidx.core.view.marginTop
 import androidx.core.view.setMargins
 import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.imgline.R
+import com.imgline.ui.ExpandedViewModel
 import com.imgline.ui.SOURCE_TO_SPECIFIC
 import com.imgline.ui.SourceType
 import com.imgline.ui.SpecificSourceType
 
 class SourceChooseFragment : Fragment(){
-    private lateinit var adapter: SourceAdapter
-    private val EXPANDED_KEY : String = "EXPANDED"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,26 +42,20 @@ class SourceChooseFragment : Fragment(){
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL))
-        adapter =
-            SourceAdapter(this, SourceType.values().toList())
+        val expandedViewModel : ExpandedViewModel by viewModels()
+        val adapter =
+            SourceAdapter(this,
+                SourceType.values().toList(),
+                expandedViewModel
+                )
         recyclerView.adapter = adapter
         return view
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val expanded = adapter.isExpanded
-            .keyIterator()
-            .asSequence()
-            .filter { adapter.isExpanded[it, false]}
-            .toList()
-            .toIntArray()
-        outState.putIntArray(EXPANDED_KEY, expanded)
     }
 }
 
 
-class SourceChooseViewHolder(view : View, val adapter: SourceAdapter) : RecyclerView.ViewHolder(view) {
+class SourceChooseViewHolder(view : View,
+                             val adapter: SourceAdapter) : RecyclerView.ViewHolder(view) {
 
     fun bind(type: SourceType, position: Int, isExpanded: Boolean) {
         val category = itemView.findViewById<TextView>(R.id.category_text)
@@ -97,9 +93,18 @@ class SourceChooseViewHolder(view : View, val adapter: SourceAdapter) : Recycler
 
 }
 
-class SourceAdapter(val fragment: SourceChooseFragment, val types : List<SourceType>) : RecyclerView.Adapter<SourceChooseViewHolder>() {
+class SourceAdapter(val fragment: SourceChooseFragment,
+                    val types : List<SourceType>,
+                    val viewModel: ExpandedViewModel
+                    ) : RecyclerView.Adapter<SourceChooseViewHolder>() {
 
-    val isExpanded = SparseBooleanArray(types.size)
+    var expandedArray : SparseBooleanArray = SparseBooleanArray()
+
+    init {
+        viewModel.expandedArray.observe(fragment.viewLifecycleOwner, Observer<SparseBooleanArray>{
+            expandedArray = it
+        })
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SourceChooseViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -115,11 +120,13 @@ class SourceAdapter(val fragment: SourceChooseFragment, val types : List<SourceT
     override fun getItemCount(): Int = types.size
 
     override fun onBindViewHolder(holder: SourceChooseViewHolder, position: Int) {
-        holder.bind(types[position], position, isExpanded[position, false])
+        holder.bind(types[position], position, expandedArray[position, false])
     }
 
     fun updateExpandedArray(newState: Boolean, position: Int) {
-        isExpanded.put(position, newState)
+        val isExpanded = viewModel.expandedArray.value
+        isExpanded?.set(position, newState)
+        viewModel.expandedArray.value = isExpanded
     }
 
     fun navigateToSourceArgsFrag(specificSourceType: SpecificSourceType) {

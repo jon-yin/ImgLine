@@ -1,9 +1,12 @@
 package com.imgline.ui
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
+import android.view.Menu
 import android.view.View
 import android.widget.EditText
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
@@ -70,16 +73,17 @@ class SpinnerItem(key: String, friendlyKeyName: Int,
 
     override fun inflate(ctx: Context) {
         widget = CustomSpinnerTextView(ctx, values, friendlyValues, default)
+        widget.id = View.generateViewId()
     }
 
     override fun getValue(): String? {
-        return widget.text.toString()
+        return widget.getValue()
     }
 
     override fun fillFromArguments(args: Map<String, String>) {
         val toFill = args.get(key) ?: default
         if (toFill != null) {
-            widget.text = toFill
+            widget.setSelectedValue(toFill)
         }
     }
 }
@@ -91,6 +95,7 @@ class EditTextItem(key: String, friendlyKeyName: Int, isRequired: Boolean, defau
 
     override fun inflate(ctx: Context) {
         widget = EditText(ctx)
+        widget.id = View.generateViewId()
     }
 
     override fun getValue(): String? {
@@ -98,28 +103,56 @@ class EditTextItem(key: String, friendlyKeyName: Int, isRequired: Boolean, defau
     }
 
     override fun fillFromArguments(args: Map<String, String>) {
-        val toFill = args.get(key) ?: default
-        if (toFill != null) {
-            widget.setText(toFill)
+        args.get(key)?.let{widget.setText(it)}
+        if (widget.text.isBlank()) {
+            widget.setText(default ?: widget.text)
         }
     }
 }
 
-class CustomSpinnerTextView(ctx: Context, private val values: Array<String>,
+class CustomSpinnerTextView(ctx: Context,
+                            private val values: Array<String>,
                             private val friendlyNames: Array<String>,
                             defaultValue : String?) : TextView(ctx) {
     private var currentSelectedItem : Int = defaultValue?.let{values.indexOf(it)} ?: 0
+    val menu = PopupMenu(ctx, this, Gravity.END)
+    val menuItems : List<Int> = List(values.size) {
+        View.generateViewId()
+    }
 
     init {
         gravity = Gravity.END
         setPaddingRelative(0,0,ctx.resources.getDimensionPixelSize(R.dimen.small_margin), 0)
         setBackgroundResource(R.drawable.box_border)
         setTextSize(ctx.resources.getInteger(R.integer.spinner_item_size).toFloat())
+        for ((name, id) in friendlyNames.zip(menuItems)) {
+            menu.menu.add(Menu.NONE, id, Menu.NONE, name)
+        }
+        setOnClickListener{
+            menu.show()
+        }
+        menu.setOnMenuItemClickListener {
+            val newSelectedItem = menuItems.indexOf(it.itemId)
+            if (newSelectedItem != -1) {
+                currentSelectedItem = newSelectedItem
+                text = friendlyNames[currentSelectedItem]
+                true
+            } else {
+                false
+            }
+        }
     }
 
     fun setSelectedValue(newValue: String){
         values.indexOf(newValue)
             .also { if (it != -1) currentSelectedItem = it }
+        text = friendlyNames[currentSelectedItem]
     }
+
+    fun getValue() : String {
+        return values[currentSelectedItem]
+    }
+
+
 }
 
