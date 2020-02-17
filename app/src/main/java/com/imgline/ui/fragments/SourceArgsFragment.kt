@@ -6,9 +6,11 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.imgline.R
@@ -32,6 +34,9 @@ class SourceArgsFragment : Fragment() {
             }
         }
     }
+
+    private val argsViewModel: SourceArgsViewModel by viewModels()
+    private lateinit var args: List<Input>
 
     private fun getArgumentsToInflate(sourceType: SpecificSourceType) : List<Input> {
         return when (sourceType) {
@@ -66,9 +71,10 @@ class SourceArgsFragment : Fragment() {
         }
     }
 
-    private fun fetchPreviousArguments(position: Int) : Map<String, String>{
-        return mapOf()
+    private fun fetchPreviousArguments() : Map<String, String>{
+        return argsViewModel.args
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,16 +85,31 @@ class SourceArgsFragment : Fragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         val sourceType = SpecificSourceType.values()[requireArguments().getInt(TYPE_ARG)]
         val sourcePosition = requireArguments().getInt(SOURCE_POSITION)
-        val args = getArgumentsToInflate(sourceType)
-        val previousArguments = fetchPreviousArguments(sourcePosition)
+        args = getArgumentsToInflate(sourceType)
+        val previousArguments = fetchPreviousArguments()
         for (arg in args) {
-            arg.inflate(activity!!)
+            arg.inflate(requireActivity())
             arg.fillFromArguments(previousArguments)
         }
+
         val adapter = ArgumentAdapter(args)
-        recyclerView.layoutManager = LinearLayoutManager(activity!!)
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         recyclerView.adapter = adapter
+        val button = view.findViewById<Button>(R.id.submit_button)
         return view
+    }
+
+    private fun aggregateArgs() : Map<String, String> {
+        return args.map{
+            it.getArguments()
+        }.reduce{
+            firstArgs, secondArgs -> firstArgs + secondArgs
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        argsViewModel.args = aggregateArgs()
     }
 }
 

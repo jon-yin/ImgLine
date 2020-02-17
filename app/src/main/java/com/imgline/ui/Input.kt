@@ -16,11 +16,8 @@ import com.imgline.R
 sealed class Input {
     abstract val type: Int
     abstract fun inflate(ctx : Context)
-    abstract fun addArguments(args: Map<String, String>): Map<String, String>
+    abstract fun getArguments(): Map<String, String>
     abstract fun fillFromArguments(args: Map<String, String>)
-
-    //protected abstract fun getArgument() : Pair<String, String>?
-
 }
 
 abstract class WidgetItem(val key: String, @StringRes val friendlyKeyName: Int, val isRequired: Boolean, val default: String?): Input() {
@@ -28,21 +25,22 @@ abstract class WidgetItem(val key: String, @StringRes val friendlyKeyName: Int, 
     override val type: Int = 1
     abstract val widget : View
 
-    override fun addArguments(args: Map<String, String>): Map<String, String> {
+    override fun getArguments(): Map<String, String> {
         val value = getValue()
-        return when  {
-            value != null -> {args + (key to value)}
+        return when {
+            value != null -> {mapOf(key to value)}
             default == null -> {if (isRequired) {
                 throw IllegalArgumentException("Argument specified as required but nothing supplied")
                 } else{
-                    return args
+                    return mapOf()
                 }
             }
-            else -> {args + (key to default)}
+            else -> mapOf(key to default)
         }
     }
 
     abstract fun getValue() : String?
+    abstract fun showError(error: String)
 
 }
 
@@ -73,6 +71,7 @@ class SpinnerItem(key: String, friendlyKeyName: Int,
 
     override fun inflate(ctx: Context) {
         widget = CustomSpinnerTextView(ctx, values, friendlyValues, default)
+        widget.isFocusableInTouchMode = true
         widget.id = View.generateViewId()
     }
 
@@ -85,6 +84,10 @@ class SpinnerItem(key: String, friendlyKeyName: Int,
         if (toFill != null) {
             widget.setSelectedValue(toFill)
         }
+    }
+
+    override fun showError(error: String) {
+        widget.error = error
     }
 }
 
@@ -99,7 +102,7 @@ class EditTextItem(key: String, friendlyKeyName: Int, isRequired: Boolean, defau
     }
 
     override fun getValue(): String? {
-        return widget.text.trim().toString()
+        widget.text.trim().let{if (it.isBlank()) {return null} else {return it.toString()} }
     }
 
     override fun fillFromArguments(args: Map<String, String>) {
@@ -107,6 +110,10 @@ class EditTextItem(key: String, friendlyKeyName: Int, isRequired: Boolean, defau
         if (widget.text.isBlank()) {
             widget.setText(default ?: widget.text)
         }
+    }
+
+    override fun showError(error: String) {
+        widget.error = error
     }
 }
 
@@ -152,7 +159,15 @@ class CustomSpinnerTextView(ctx: Context,
     fun getValue() : String {
         return values[currentSelectedItem]
     }
-
-
 }
 
+interface Validator {
+    fun isValid() : Pair<Boolean, Int>
+}
+
+class ExcludeArgumentsValidator(val unallowedArg: Pair<String, String?>, val unallowedArg2: Pair<String, String?>): Validator {
+
+    override fun isValid(): Pair<Boolean, Int> {
+        return true to 0
+    }
+}

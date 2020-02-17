@@ -25,10 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.imgline.R
-import com.imgline.ui.ExpandedViewModel
-import com.imgline.ui.SOURCE_TO_SPECIFIC
-import com.imgline.ui.SourceType
-import com.imgline.ui.SpecificSourceType
+import com.imgline.ui.*
 
 class SourceChooseFragment : Fragment(){
 
@@ -51,6 +48,7 @@ class SourceChooseFragment : Fragment(){
         recyclerView.adapter = adapter
         return view
     }
+
 }
 
 
@@ -98,13 +96,7 @@ class SourceAdapter(val fragment: SourceChooseFragment,
                     val viewModel: ExpandedViewModel
                     ) : RecyclerView.Adapter<SourceChooseViewHolder>() {
 
-    var expandedArray : SparseBooleanArray = SparseBooleanArray()
-
-    init {
-        viewModel.expandedArray.observe(fragment.viewLifecycleOwner, Observer<SparseBooleanArray>{
-            expandedArray = it
-        })
-    }
+    val expandedArray : SparseBooleanArray = viewModel.expandedArray
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SourceChooseViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -124,9 +116,8 @@ class SourceAdapter(val fragment: SourceChooseFragment,
     }
 
     fun updateExpandedArray(newState: Boolean, position: Int) {
-        val isExpanded = viewModel.expandedArray.value
-        isExpanded?.set(position, newState)
-        viewModel.expandedArray.value = isExpanded
+        val isExpanded = viewModel.expandedArray
+        isExpanded.set(position, newState)
     }
 
     fun navigateToSourceArgsFrag(specificSourceType: SpecificSourceType) {

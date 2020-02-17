@@ -5,5 +5,5 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class ExpandedViewModel : ViewModel(){
-    val expandedArray : MutableLiveData<SparseBooleanArray> = MutableLiveData(SparseBooleanArray())
+    val expandedArray : SparseBooleanArray = SparseBooleanArray()
 }
