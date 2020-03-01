@@ -19,4 +19,6 @@
     <string name="sort_field">Sort:</string>
     <string name="window_field">Window:</string>
     <string name="submit_button">Submit</string>
+    <string name="not_empty_name">Name may not be empty</string>
+    <string name="incompatible_values">Can only choose %1$s with %2$s.</string>
 </resources>

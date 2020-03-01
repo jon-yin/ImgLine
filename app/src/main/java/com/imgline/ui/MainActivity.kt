@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         val navController = findNavController(R.id.android_nav_frag)
         val addPostClickListener = View.OnClickListener {
-            navController.navigate(R.id.createFeedFragment)
+            navController.navigate(R.id.create_feed)
             if (drawerLayout != null) {
                 drawerLayout.closeDrawer(GravityCompat.START)
             }

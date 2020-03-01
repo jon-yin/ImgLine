@@ -9,4 +9,5 @@
     <dimen name="small_margin">8dp</dimen>
     <dimen name="larger_margin">16dp</dimen>
     <dimen name="drawer_menu">300dp</dimen>
+    <dimen name="negative_offset">-2dp</dimen>
 </resources>

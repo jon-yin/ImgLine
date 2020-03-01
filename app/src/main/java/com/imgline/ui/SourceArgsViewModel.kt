@@ -6,5 +6,6 @@ import androidx.lifecycle.ViewModel
 class SourceArgsViewModel : ViewModel() {
 
     var args = mapOf<String, String>()
+    var errors = mapOf<String, String>()
 
 }

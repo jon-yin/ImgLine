@@ -1,14 +1,14 @@
 package com.imgline.ui.fragments
 
-import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,26 +41,23 @@ class SourceArgsFragment : Fragment() {
     private fun getArgumentsToInflate(sourceType: SpecificSourceType) : List<Input> {
         return when (sourceType) {
             SpecificSourceType.IMGUR_FRONT_PAGE -> {listOf(
-                    EditTextItem("Name", R.string.name_field, false,
+                    EditTextItem("NAME", R.string.name_field,
                         activity?.getString(R.string.imgur_default_source_name) ?:
                         SpecificSourceType.IMGUR_FRONT_PAGE.toString()),
                     SpinnerItem("SECTION",
                         R.string.section_field,
-                        false,
                         SECTION_OPTIONS,
                         SECTION_FRIENDLY_NAMES,
                         ImgurDefaultSource.DEFAULT_SECTION
                         ),
                     SpinnerItem("SORT",
                         R.string.sort_field,
-                        false,
                         SORT_OPTIONS,
                         SORT_FRIENDLY_NAMES,
                         ImgurDefaultSource.DEFAULT_SORT
                     ),
                     SpinnerItem("WINDOW",
                         R.string.window_field,
-                        false,
                         WINDOW_OPTIONS,
                         WINDOW_FRIENDLY_NAMES,
                         ImgurDefaultSource.DEFAULT_WINDOW
@@ -87,29 +84,30 @@ class SourceArgsFragment : Fragment() {
         val sourcePosition = requireArguments().getInt(SOURCE_POSITION)
         args = getArgumentsToInflate(sourceType)
         val previousArguments = fetchPreviousArguments()
-        for (arg in args) {
-            arg.inflate(requireActivity())
-            arg.fillFromArguments(previousArguments)
+        args.forEach{
+            it.inflate(requireActivity())
+            it.fillFromArguments(previousArguments)
         }
-
+        argsViewModel.errors.forEach{
+            args.setError(it.value, it.key)
+        }
         val adapter = ArgumentAdapter(args)
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         recyclerView.adapter = adapter
         val button = view.findViewById<Button>(R.id.submit_button)
-        return view
-    }
-
-    private fun aggregateArgs() : Map<String, String> {
-        return args.map{
-            it.getArguments()
-        }.reduce{
-            firstArgs, secondArgs -> firstArgs + secondArgs
+        button.setOnClickListener{
+            if (ArgsValidators.validateArgs(sourceType, args, requireActivity())) {
+                Toast.makeText(requireActivity(), "Valid args supplied!", Toast.LENGTH_LONG).show()
+            }
         }
+        return view
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        argsViewModel.args = aggregateArgs()
+        argsViewModel.args = args.getArguments()
+        argsViewModel.errors = args.getErrors()
+
     }
 }
 
@@ -131,32 +129,50 @@ class ArgumentAdapter(val arguments: List<Input>) : RecyclerView.Adapter<Argumen
         when (argument) {
             is WidgetItem -> {
                 val ctx = holder.itemView.context
-                val widget =  argument.widget
+                val widget =  argument.getView()
                 val name = ctx.getString(argument.friendlyKeyName)
-                val textView = TextView(ctx)
-                if (Build.VERSION.SDK_INT >= 23) {
-                    textView.setTextAppearance(R.style.listTextStyle)
-                } else {
-                    textView.setTextAppearance(ctx, R.style.listTextStyle)
-                }
+                val textView = holder.itemView.findViewById<TextView>(R.id.widget_name)
                 textView.text = name
-                val firstChild = holder.itemView.findViewById<FrameLayout>(R.id.first_child)
-                val secondChild = holder.itemView.findViewById<FrameLayout>(R.id.second_child)
-                firstChild.removeAllViews()
-                secondChild.removeAllViews()
-                val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT)
-                params.gravity = Gravity.CENTER
-                params.marginEnd = ctx.resources.getDimensionPixelSize(R.dimen.small_margin)
-                params.marginStart = ctx.resources.getDimensionPixelSize(R.dimen.small_margin)
-                val titleParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
-                    FrameLayout.LayoutParams.WRAP_CONTENT
-                    )
-                titleParams.gravity = Gravity.CENTER_VERTICAL
-                titleParams.marginStart = ctx.resources.getDimensionPixelSize(R.dimen.small_margin)
-                titleParams.marginEnd = ctx.resources.getDimensionPixelSize(R.dimen.small_margin)
-                firstChild.addView(textView, titleParams)
-                secondChild.addView(widget, params)
+                val constraintLayout = holder.itemView
+                    .findViewById<ConstraintLayout>(R.id.constraint_layout)
+                (0 until constraintLayout.childCount).map {
+                    constraintLayout.getChildAt(it)
+                }.filterNot{
+                    it.id == textView.id
+                }.forEach{
+                    constraintLayout.removeView(it)
+                }
+                constraintLayout.addView(widget, ConstraintLayout.LayoutParams(
+                    0,
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    this.matchConstraintMinWidth = ConstraintLayout.LayoutParams.WRAP_CONTENT
+                    this.matchConstraintPercentWidth = 0.5f
+                })
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(constraintLayout)
+                constraintSet.connect(widget.id, ConstraintSet.TOP, textView.id, ConstraintSet.BOTTOM,
+                    if (argument.marginTop != -1) {
+                        ctx.resources.getDimensionPixelSize(argument.marginTop)
+                    } else {
+                        0
+                    }
+                )
+                constraintSet.connect(widget.id, ConstraintSet.START, textView.id, ConstraintSet.START,
+                    if (argument.marginStart != -1) {
+                        ctx.resources.getDimensionPixelSize(argument.marginStart)
+                    } else {
+                        0
+                    }
+                )
+                constraintSet.connect(widget.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM,
+                    if (argument.marginBottom != -1) {
+                        ctx.resources.getDimensionPixelSize(argument.marginBottom)
+                    } else {
+                        0
+                    }
+                )
+                constraintSet.applyTo(constraintLayout)
             }
         }
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="listDivider" format="reference"/>
-    
+    <declare-styleable name="CustomSpinnerTextView">
+        <attr name="state_error" format="boolean"/>
+    </declare-styleable>
 </resources>
