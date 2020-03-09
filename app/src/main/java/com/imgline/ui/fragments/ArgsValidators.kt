@@ -2,23 +2,34 @@ package com.imgline.ui.fragments
 
 import android.content.Context
 import android.util.Log
+import android.widget.TextView
 import com.imgline.R
+import com.imgline.data.models.Source
 import com.imgline.ui.*
 
 object ArgsValidators {
+    private fun List<Input>.assertName(ctx: Context, args: Map<String, String>) : Boolean {
+        if ("NAME" !in args || (args["NAME"] ?: "").isBlank()) {
+            setError(ctx.getString(R.string.not_empty_name), "NAME")
+            return false
+        }
+        return true;
+    }
+
     fun validateArgs(specificSourceType: SpecificSourceType,
                      inputs: List<Input>,
+                     globalError: TextView,
                      ctx: Context
                      ) : Boolean {
         inputs.clearErrors()
+        globalError.text = null
+        val args = inputs.getArguments()
+        if (!inputs.assertName(ctx, args)) {
+            return false
+        }
         when (specificSourceType) {
             SpecificSourceType.IMGUR_FRONT_PAGE -> {
                 var noError = true
-                val args = inputs.getArguments()
-                if ((args.get("NAME") ?: "").isBlank()) {
-                    inputs.setError( ctx.getString(R.string.not_empty_name), "NAME")
-                    noError = false
-                }
                 val sortArg = args.getValue("SORT")
                 val sectionArg = args.getValue("SECTION")
                 Log.d("VALIDATOR", sortArg)

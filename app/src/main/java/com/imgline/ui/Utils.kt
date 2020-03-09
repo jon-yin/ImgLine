@@ -11,16 +11,6 @@ import com.imgline.R
 import com.imgline.data.network.imgur.ImgurDefaultSource
 import java.lang.IllegalArgumentException
 
-object Utils {
-    private val iconMapper = hashMapOf<Class<out Any>, @androidx.annotation.DrawableRes Int>(
-        ImgurDefaultSource::class.java to R.drawable.imgur_logo
-    )
-
-    fun getIcon(key: Class<out Any>): Int {
-        return iconMapper[key] ?: throw IllegalArgumentException("No icon for ${key}")
-    }
-}
-
 fun getCircleProgressDrawable(ctx: Context): Drawable {
     val drawable = CircularProgressDrawable(ctx)
     drawable.setStyle(CircularProgressDrawable.LARGE)

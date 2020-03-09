@@ -2,10 +2,10 @@ package com.imgline.ui;
 
 
 import androidx.lifecycle.ViewModel
-import com.imgline.data.database.EntitySource
+import com.imgline.data.models.Source
 
 class SourcesViewModel : ViewModel() {
 
-    val sources: List<EntitySource> = listOf()
+    val sources: ArrayList<Source> = arrayListOf()
 
 }

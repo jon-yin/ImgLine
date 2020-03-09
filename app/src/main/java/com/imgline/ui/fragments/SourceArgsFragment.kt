@@ -11,9 +11,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.imgline.R
+import com.imgline.data.database.EntitySource
+import com.imgline.data.models.Source
 import com.imgline.data.network.imgur.*
 import com.imgline.ui.*
 
@@ -95,9 +100,14 @@ class SourceArgsFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         recyclerView.adapter = adapter
         val button = view.findViewById<Button>(R.id.submit_button)
+        val globalError = view.findViewById<TextView>(R.id.global_error)
         button.setOnClickListener{
-            if (ArgsValidators.validateArgs(sourceType, args, requireActivity())) {
-                Toast.makeText(requireActivity(), "Valid args supplied!", Toast.LENGTH_LONG).show()
+            if (ArgsValidators.validateArgs(sourceType, args, globalError, requireActivity())) {
+                val mapArgs = args.getArguments()
+                val newSource = Source(mapArgs.getValue("NAME"), sourceType, mapArgs.filterKeys {it != "NAME"})
+                val sourceViewModel : SourcesViewModel by navGraphViewModels(R.id.create_feed)
+                sourceViewModel.sources.add(newSource)
+                findNavController().navigate(R.id.action_sourceArgsFragment_to_createFeedFragment)
             }
         }
         return view

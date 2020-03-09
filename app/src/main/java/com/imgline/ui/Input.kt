@@ -14,11 +14,14 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.imgline.R
 
+val List<Input>.name : String?
+    get() = getArguments()["NAME"]
 
 fun List<Input>.getArguments() : Map<String, String> {
     return this
         .map { it.getArguments() }
         .reduce { input1, input2 -> input1 + input2 }
+
 }
 
 fun List<Input>.getInputWithKey(key: String): Input {

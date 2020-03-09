@@ -14,6 +14,12 @@
             layout="@layout/fragment_recycler_view"
             />
 
+        <TextView
+            android:id= "@+id/global_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Design.Error"/>
+
         <Button
             android:id="@+id/submit_button"
             android:layout_width="wrap_content"
