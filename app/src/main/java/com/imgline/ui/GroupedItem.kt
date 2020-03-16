@@ -28,19 +28,30 @@ class LinearGroupedItem(vararg inputs: Input,
     }
 
     override fun fillFromArguments(args: Map<String, String>) {
-        TODO("Not yet implemented")
+        inputs.forEach{
+            it.fillFromArguments(args)
+        }
     }
 
     override fun showError(key: String, msg: String) {
-        TODO("Not yet implemented")
+        for (input in inputs) {
+            if (key in input.keys) {
+                input.showError(key, msg)
+                return
+            }
+        }
     }
 
     override fun getErrors(): Map<String, String> {
-        TODO("Not yet implemented")
+        return inputs.map{
+            it.getErrors()
+        }.reduce{args1, args2 -> args1 + args2}
     }
 
     override fun clearErrors() {
-        TODO("Not yet implemented")
+        inputs.forEach{
+            it.clearErrors()
+        }
     }
 
 
