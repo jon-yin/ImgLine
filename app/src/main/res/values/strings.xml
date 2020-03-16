@@ -21,6 +21,7 @@
     <string name="submit_button">Submit</string>
     <string name="not_empty_name">Name may not be empty</string>
     <string name="incompatible_values">Can only choose %1$s with %2$s.</string>
+    <string name="warning_back_press_title">Exit Feed Creation?</string>
     <string name="warning_back_press">Leave the feed creation screen? You will lose all unsaved progress.</string>
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>

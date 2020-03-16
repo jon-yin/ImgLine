@@ -23,8 +23,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="TextView"
         android:background="?selectableItemBackground"
+        android:text="TextView"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintBottom_toBottomOf="@+id/source_icon"
         app:layout_constraintStart_toEndOf="@+id/source_icon"
@@ -39,4 +39,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/source_name"
         app:srcCompat="@drawable/ic_delete_24px" />
+
+    <TextView
+        android:id="@+id/specific_source_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/source_name"
+        app:layout_constraintTop_toBottomOf="@+id/source_name" />
 </androidx.constraintlayout.widget.ConstraintLayout>
