@@ -1,9 +1,6 @@
-package com.imgline.ui.fragments
+package com.imgline.ui.fragments.createfeed
 
-import android.os.Build
 import android.os.Bundle
-import android.transition.TransitionManager
-import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
@@ -11,19 +8,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.util.keyIterator
 import androidx.core.util.set
-import androidx.core.view.marginTop
-import androidx.core.view.setMargins
-import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.imgline.R
 import com.imgline.ui.*
 
@@ -41,10 +32,11 @@ class SourceChooseFragment : Fragment(){
         recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.HORIZONTAL))
         val expandedViewModel : ExpandedViewModel by viewModels()
         val adapter =
-            SourceAdapter(this,
+            SourceAdapter(
+                this,
                 SourceType.values().toList(),
                 expandedViewModel
-                )
+            )
         recyclerView.adapter = adapter
         return view
     }
@@ -53,7 +45,8 @@ class SourceChooseFragment : Fragment(){
 
 
 class SourceChooseViewHolder(view : View,
-                             val adapter: SourceAdapter) : RecyclerView.ViewHolder(view) {
+                             val adapter: SourceAdapter
+) : RecyclerView.ViewHolder(view) {
 
     fun bind(type: SourceType, position: Int, isExpanded: Boolean) {
         val category = itemView.findViewById<TextView>(R.id.category_text)

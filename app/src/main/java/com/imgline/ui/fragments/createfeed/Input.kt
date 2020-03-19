@@ -1,19 +1,8 @@
-package com.imgline.ui
+package com.imgline.ui.fragments.createfeed
 
 import android.content.Context
-import android.os.Build
-import android.view.Gravity
-import android.view.Menu
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.PopupMenu
-import android.widget.TextView
-import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
-import com.imgline.R
 
 val List<Input>.name : String?
     get() = getArguments()["NAME"]
@@ -56,14 +45,9 @@ sealed class Input {
     abstract fun getArguments(): Map<String, String>
     abstract fun fillFromArguments(args: Map<String, String>)
     abstract fun showError(key: String, msg: String)
-    fun showErrors(vararg msgs : Pair<String, String>) {
-        msgs.forEach {
-            val (key, value) = it
-            showError(key, value)
-        }
-    }
     abstract fun getErrors() : Map<String, String>
     abstract fun clearErrors()
+    abstract fun getView() : View
 }
 
 val WIDGET_ITEM = 1
@@ -77,8 +61,6 @@ abstract class WidgetItem(val key: String, @StringRes val friendlyKeyName: Int, 
     var marginStart = -1
     var marginTop = -1
     var marginBottom = -1
-
-    abstract fun getView() : View
 
     override fun getArguments(): Map<String, String> {
         val value = getValue()
@@ -94,7 +76,7 @@ abstract class WidgetItem(val key: String, @StringRes val friendlyKeyName: Int, 
 
 }
 
-abstract class GroupedItem(val inputs: List<Input>, @StringRes val title : Int) : Input() {
+abstract class GroupedItem(val inputs: List<Input>, @StringRes val title : Int?) : Input() {
     override val keys: List<String> = inputs.getArguments().keys.toList()
     override val type: Int = GROUPED_ITEM
 
@@ -107,7 +89,5 @@ abstract class GroupedItem(val inputs: List<Input>, @StringRes val title : Int) 
     final override fun inflate(ctx: Context) {
         layoutWidgets(ctx)
     }
-
-    abstract fun getViewGroup() : ViewGroup
 
 }

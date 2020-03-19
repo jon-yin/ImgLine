@@ -1,4 +1,4 @@
-package com.imgline.ui.fragments
+package com.imgline.ui.fragments.createfeed
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -36,11 +36,14 @@ class CreateFeedFragment : Fragment() {
             findNavController().navigate(R.id.action_createFeedFragment_to_sourceChooseFragment)
         }
         val sourceViewModel : SourcesViewModel by navGraphViewModels(R.id.create_feed)
-        val adapter = FeedSourceAdapter(sourceViewModel, this)
+        val adapter = FeedSourceAdapter(
+            sourceViewModel,
+            this
+        )
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         recyclerView.addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
-        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (sourceViewModel.sources.size != 0) {
                     AlertDialog.Builder(requireActivity())
@@ -48,10 +51,13 @@ class CreateFeedFragment : Fragment() {
                         .setTitle(R.string.warning_back_press_title)
                         .setIcon(R.drawable.ic_warning_24px)
                         .setPositiveButton(R.string.yes) {
-                            _, _ ->
-                                findNavController().popBackStack()
+                                _, _ ->
+                            findNavController().popBackStack()
+
                         }
                         .setNegativeButton(R.string.cancel, null).show()
+                } else {
+                    findNavController().popBackStack()
                 }
             }
         })
@@ -84,7 +90,13 @@ class FeedSourceAdapter(val items : SourcesViewModel, val frag: CreateFeedFragme
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedSourceViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return FeedSourceViewHolder(inflater.inflate(R.layout.recycler_view_source, parent, false))
+        return FeedSourceViewHolder(
+            inflater.inflate(
+                R.layout.recycler_view_source,
+                parent,
+                false
+            )
+        )
     }
 
     override fun getItemCount(): Int {

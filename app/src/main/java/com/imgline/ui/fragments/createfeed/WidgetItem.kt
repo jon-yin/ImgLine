@@ -1,4 +1,4 @@
-package com.imgline.ui
+package com.imgline.ui.fragments.createfeed
 
 import android.content.Context
 import android.os.Build
@@ -46,7 +46,12 @@ class SpinnerItem(key: String, friendlyKeyName: Int,
         widgetLayout = LinearLayout(ctx)
         widgetLayout.id = View.generateViewId()
         widgetLayout.orientation = LinearLayout.VERTICAL
-        widget = CustomSpinnerTextView(ctx, values, friendlyValues, default)
+        widget = CustomSpinnerTextView(
+            ctx,
+            values,
+            friendlyValues,
+            default
+        )
         //widget.id = View.generateViewId()
         errorText = TextView(ctx)
         if (Build.VERSION.SDK_INT >= 23) {
@@ -122,6 +127,7 @@ class EditTextItem(key: String, friendlyKeyName: Int, val initialText : String, 
         }
         widget.setText(initialText)
         widgetLayout.addView(widget, params)
+        widgetLayout.isHintEnabled = false
         widgetLayout.isErrorEnabled = true
     }
 
@@ -198,7 +204,9 @@ class CustomSpinnerTextView(ctx: Context,
     override fun onCreateDrawableState(extraSpace: Int): IntArray {
         val states = super.onCreateDrawableState(extraSpace + 1)
         return if (hasError) {
-            View.mergeDrawableStates(states, ERROR_STATE)
+            View.mergeDrawableStates(states,
+                ERROR_STATE
+            )
         } else {
             states
         }

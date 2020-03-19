@@ -1,4 +1,4 @@
-package com.imgline.ui
+package com.imgline.ui.fragments.createfeed
 
 import android.util.SparseBooleanArray
 import androidx.lifecycle.MutableLiveData

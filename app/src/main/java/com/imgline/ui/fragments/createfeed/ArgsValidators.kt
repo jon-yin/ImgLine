@@ -1,10 +1,9 @@
-package com.imgline.ui.fragments
+package com.imgline.ui.fragments.createfeed
 
 import android.content.Context
 import android.util.Log
 import android.widget.TextView
 import com.imgline.R
-import com.imgline.data.models.Source
 import com.imgline.ui.*
 
 object ArgsValidators {

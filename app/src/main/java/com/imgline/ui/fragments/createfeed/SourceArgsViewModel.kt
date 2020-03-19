@@ -1,4 +1,4 @@
-package com.imgline.ui
+package com.imgline.ui.fragments.createfeed
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

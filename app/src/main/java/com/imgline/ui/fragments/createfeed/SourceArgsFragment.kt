@@ -1,26 +1,26 @@
-package com.imgline.ui.fragments
+package com.imgline.ui.fragments.createfeed
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.imgline.R
-import com.imgline.data.database.EntitySource
 import com.imgline.data.models.Source
 import com.imgline.data.network.imgur.*
 import com.imgline.ui.*
+import java.lang.IllegalArgumentException
 
 class SourceArgsFragment : Fragment() {
 
@@ -46,30 +46,59 @@ class SourceArgsFragment : Fragment() {
     private fun getArgumentsToInflate(sourceType: SpecificSourceType) : List<Input> {
         return when (sourceType) {
             SpecificSourceType.IMGUR_FRONT_PAGE -> {listOf(
-                    EditTextItem("NAME", R.string.name_field,
-                        activity?.getString(R.string.imgur_default_source_name) ?:
-                        SpecificSourceType.IMGUR_FRONT_PAGE.toString()),
-                    SpinnerItem("SECTION",
-                        R.string.section_field,
-                        SECTION_OPTIONS,
-                        SECTION_FRIENDLY_NAMES,
-                        ImgurDefaultSource.DEFAULT_SECTION
-                        ),
-                    SpinnerItem("SORT",
+                EditTextItem(
+                    "NAME", R.string.name_field,
+                    requireActivity().getString(R.string.imgur_default_source_name)
+                        ?: SpecificSourceType.IMGUR_FRONT_PAGE.toString()
+                ),
+                SpinnerItem(
+                    "SECTION",
+                    R.string.section_field,
+                    SECTION_OPTIONS,
+                    SECTION_FRIENDLY_NAMES,
+                    ImgurDefaultSource.DEFAULT_SECTION
+                ),
+                SpinnerItem(
+                    "SORT",
+                    R.string.sort_field,
+                    SORT_OPTIONS,
+                    SORT_FRIENDLY_NAMES,
+                    ImgurDefaultSource.DEFAULT_SORT
+                ),
+                SpinnerItem(
+                    "WINDOW",
+                    R.string.window_field,
+                    WINDOW_OPTIONS,
+                    WINDOW_FRIENDLY_NAMES,
+                    ImgurDefaultSource.DEFAULT_WINDOW
+                )
+            )}
+            SpecificSourceType.IMGUR_SEARCH -> {
+                listOf(
+                    EditTextItem(
+                        "NAME", R.string.name_field,
+                        requireActivity().getString(R.string.imgur_search_source_name)
+                    ),
+                    SpinnerItem(
+                        "SORT",
                         R.string.sort_field,
                         SORT_OPTIONS,
                         SORT_FRIENDLY_NAMES,
                         ImgurDefaultSource.DEFAULT_SORT
                     ),
-                    SpinnerItem("WINDOW",
+                    SpinnerItem(
+                        "WINDOW",
                         R.string.window_field,
                         WINDOW_OPTIONS,
                         WINDOW_FRIENDLY_NAMES,
                         ImgurDefaultSource.DEFAULT_WINDOW
+                    ),
+                    EditTextItem(
+                        "Q", R.string.query_field,""
                     )
-            )}
-            SpecificSourceType.IMGUR_SEARCH -> {
-                listOf()}
+                    //LinearGroupedItem(R.string.advanced_options)
+                )
+            }
         }
     }
 
@@ -102,7 +131,13 @@ class SourceArgsFragment : Fragment() {
         val button = view.findViewById<Button>(R.id.submit_button)
         val globalError = view.findViewById<TextView>(R.id.global_error)
         button.setOnClickListener{
-            if (ArgsValidators.validateArgs(sourceType, args, globalError, requireActivity())) {
+            if (ArgsValidators.validateArgs(
+                    sourceType,
+                    args,
+                    globalError,
+                    requireActivity()
+                )
+            ) {
                 val mapArgs = args.getArguments()
                 val newSource = Source(mapArgs.getValue("NAME"), sourceType, mapArgs.filterKeys {it != "NAME"})
                 val sourceViewModel : SourcesViewModel by navGraphViewModels(R.id.create_feed)
@@ -125,9 +160,35 @@ class ArgumentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
 class ArgumentAdapter(val arguments: List<Input>) : RecyclerView.Adapter<ArgumentViewHolder>() {
 
+    override fun getItemViewType(position: Int): Int {
+        return arguments[position].type
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArgumentViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return ArgumentViewHolder(inflater.inflate(R.layout.recycler_view_single_arg, parent, false))
+        when (viewType) {
+            WIDGET_ITEM -> {
+                return ArgumentViewHolder(
+                    inflater.inflate(
+                        R.layout.recycler_view_single_arg,
+                        parent,
+                        false
+                    )
+                )
+            }
+            GROUPED_ITEM -> {
+                val frameLayout = FrameLayout(parent.context).apply {
+                    this.layoutParams = FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                    )
+                }
+                return ArgumentViewHolder(
+                    frameLayout
+                )
+            }
+        }
+        return throw IllegalArgumentException("Invalid view type supplied")
     }
 
     override fun getItemCount(): Int {
@@ -153,7 +214,7 @@ class ArgumentAdapter(val arguments: List<Input>) : RecyclerView.Adapter<Argumen
                     constraintLayout.removeView(it)
                 }
                 constraintLayout.addView(widget, ConstraintLayout.LayoutParams(
-                    0,
+                    ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
                     ConstraintLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
                     this.matchConstraintMinWidth = ConstraintLayout.LayoutParams.WRAP_CONTENT
@@ -184,6 +245,9 @@ class ArgumentAdapter(val arguments: List<Input>) : RecyclerView.Adapter<Argumen
                 )
                 constraintSet.applyTo(constraintLayout)
             }
+         is GroupedItem -> {
+             (holder.itemView as FrameLayout).addView(argument.getView())
+         }
         }
 
     }
